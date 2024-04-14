@@ -24,7 +24,7 @@ executable bhoogle
                      , directory
                      , filepath
                      , containers
-                     , brick >= 2.1
+                     , brick >= 2.3
                      , vty >= 6.0
                      , vty-crossplatform
                      , vector

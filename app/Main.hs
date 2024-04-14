@@ -159,19 +159,7 @@ handleEvent ev =
           case BF.focusGetCurrent $ st' ^. stFocus of
             Just TypeSearch ->
               case k of
-                K.KChar '\t' -> do
-                  -- Search, clear sort order, focus next
-                  found <- liftIO $ doSearch st'
-                  modify $ \st -> filterResults $ st & stFocus %~ BF.focusNext
-                                                  & stResults .~ found
-                                                  & stSortResults .~ SortNone
-
-                K.KBackTab ->do
-                  -- Search, clear sort order, focus prev
-                  found <- liftIO $ doSearch st'
-                  modify $ \st -> filterResults $ st & stFocus %~ BF.focusPrev
-                                                   & stResults .~ found
-                                                   & stSortResults .~ SortNone
+                K.KChar '\t' -> modify $ \st -> st & stFocus %~ BF.focusNext
 
                 K.KEnter -> do
                   -- Search, clear sort order, focus on results

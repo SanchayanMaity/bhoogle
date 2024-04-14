@@ -170,12 +170,7 @@ handleEvent ev =
                                                   & stFocus %~ BF.focusNext & stFocus %~ BF.focusNext
                                                   -- TODO with brick >= 0.33, rather than 2x focus next: & stFocus %~ BF.focusSetCurrent ListResults
 
-                _ -> do
-                  -- Let the editor handle all other events
-                  B.zoom stEditType $ BE.handleEditorEvent ev
-                  st <- get
-                  st2 <- liftIO $ searchAhead doSearch st
-                  put st2
+                _ -> B.zoom stEditType $ BE.handleEditorEvent ev
 
 
             Just TextSearch ->
@@ -244,23 +239,6 @@ yankPackage st selected =
 yankModule :: BrickState -> Maybe (Int, H.Target) -> IO BrickState
 yankModule st selected =
   yank (\t -> Txt.pack . fst <$> H.targetModule t) st selected
-
-
--- | Search ahead for type strings longer than 3 chars.
-searchAhead :: (BrickState -> IO [H.Target]) -> BrickState -> IO BrickState
-searchAhead search st =
-  let searchText = Txt.strip . Txt.concat . BE.getEditContents $ st ^. stEditType in
-
-  if Txt.length (Txt.filter (`notElem` [' ', '\t', '(', ')', '=']) searchText) > 3
-  then do
-    -- Search
-    found <- search st
-    pure . filterResults $ st & stResults .~ found
-                              & stSortResults .~ SortNone
-  else
-    -- Just clear
-    pure $ st & stResults .~ []
-              & stResultsList %~ BL.listClear
 
 
 -- | Filter the results from hoogle using the search text

@@ -167,8 +167,7 @@ handleEvent ev =
                   found <- liftIO $ doSearch st'
                   modify $ \st -> filterResults $ st & stResults .~ found
                                                   & stSortResults .~ SortNone
-                                                  & stFocus %~ BF.focusNext & stFocus %~ BF.focusNext
-                                                  -- TODO with brick >= 0.33, rather than 2x focus next: & stFocus %~ BF.focusSetCurrent ListResults
+                                                  & stFocus %~ BF.focusSetCurrent ListResults
 
                 _ -> B.zoom stEditType $ BE.handleEditorEvent ev
 
